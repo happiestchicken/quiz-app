@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import './styles.css'
+import React from 'react';
+import Start from './components/startPage'
+import Question from './components/question'
 
-function App() {
+
+function App() {  
+  const [startMenu, setStartMenu] = React.useState(true)
+  // const [apiDone, setApiDone] = React.useState(false)
+  const [questions, setQuestions] = React.useState([])
+
+  React.useEffect(() => {
+    console.log("start menu?: ")
+    console.log(startMenu)
+      fetch("https://opentdb.com/api.php?amount=5&category=9&difficulty=medium&type=multiple")
+          .then(res => res.json())
+          .then(data => {
+              setQuestions(data.results)
+          })
+  }, [startMenu])
+ 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      {startMenu && <Start start={setStartMenu} />}
+      {!startMenu && <Question questions={questions} />}
+    </main>
   );
 }
 
