@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/quiz-app/static/css/main.203deefd.css",
+    "main.js": "/quiz-app/static/js/main.030ae26a.js",
+    "static/js/787.9e90ff23.chunk.js": "/quiz-app/static/js/787.9e90ff23.chunk.js",
+    "static/media/Karla-Light.ttf": "/quiz-app/static/media/Karla-Light.df6515576f03d0943e66.ttf",
+    "static/media/Karla-Medium.ttf": "/quiz-app/static/media/Karla-Medium.2cee120bb74393b6a337.ttf",
+    "index.html": "/quiz-app/index.html",
+    "main.203deefd.css.map": "/quiz-app/static/css/main.203deefd.css.map",
+    "main.030ae26a.js.map": "/quiz-app/static/js/main.030ae26a.js.map",
+    "787.9e90ff23.chunk.js.map": "/quiz-app/static/js/787.9e90ff23.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.203deefd.css",
+    "static/js/main.030ae26a.js"
+  ]
+}
