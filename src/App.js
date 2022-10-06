@@ -6,23 +6,56 @@ import Question from './components/question'
 
 function App() {  
   const [startMenu, setStartMenu] = React.useState(true)
-  // const [apiDone, setApiDone] = React.useState(false)
   const [questions, setQuestions] = React.useState([])
+  const [apiDone, setApiDone] = React.useState(false)
+
+  // making the start screen disappear and the other screen apprear
+  function startGame() {
+    setStartMenu(false)
+    setApiDone(true)
+}
+
+
+
+function toggleSelected(selected) {
+  console.log("shiiiiit")
+  console.log(selected)
+    // setQuestions(prevQuestions => {
+    //     return prevQuestions.map(question => {
+    //         return question, question.selected === selected
+    //     })
+    // })
+}
+
+
+
 
   React.useEffect(() => {
-    console.log("start menu?: ")
-    console.log(startMenu)
-      fetch("https://opentdb.com/api.php?amount=5&category=9&difficulty=medium&type=multiple")
-          .then(res => res.json())
-          .then(data => {
-              setQuestions(data.results)
-          })
-  }, [startMenu])
- 
+    if(startMenu === false) {
+    fetch("https://opentdb.com/api.php?amount=5")
+        .then(res => res.json())
+        .then(data => setQuestions(data.results.map(function(question) {
+            return({
+                    question:question.question,
+                    options:question.incorrect_answers.concat([question.correct_answer]).map(value => ({ value, sort: Math.random() })).sort((a, b) => a.sort - b.sort).map(({ value }) => value),
+                    selected_answer:undefined,
+                    correct_answer:question.correct_answer})
+        })))
+    }
+
+}, [startMenu])
+
+
+  const questionsPage = questions.map(question => (
+    <Question question={question.question} options={question.options} selected={question.selected_answer} toggleSelected={toggleSelected}/>
+  ))
+
   return (
     <main>
-      {startMenu && <Start start={setStartMenu} />}
-      {!startMenu && <Question questions={questions} />}
+        {startMenu && <Start start={startGame} />}
+      <div className='question-box'>
+        {apiDone && questionsPage}
+      </div>
     </main>
   );
 }
