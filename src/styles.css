@@ -178,5 +178,9 @@ hr {
 }
 
 .error-message {
-    
+    font-family: 'Karla';
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--dark-purple);
+    margin-top: 20px;
 }
