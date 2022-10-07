@@ -3,6 +3,7 @@ import '../styles.css'
 
 
 export default function Start(props) {
+    
     return (
         <div className="start-page">
             <h1 className="quizzical-title">Quizzical</h1>

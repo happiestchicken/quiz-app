@@ -2,6 +2,8 @@
     --background: #F5F7FB;
     --purple: #4D5B9E;
     --dark-purple: #293264;
+    --button-green: #74d7a2,
+    --button-red: #F8BCBC
 }
 
 main {
@@ -75,6 +77,10 @@ body {
 .question {
     margin-bottom: 10px;
     margin-top: 10px;
+    font-family: 'Karla';
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--dark-purple)
 }
 
 .question-box {
@@ -84,19 +90,93 @@ body {
     padding-right: 30px;
     -webkit-box-shadow:inset 5pxpx 5pxpx 2pxpx 3pxpx #BFBFBF;
     box-shadow:inset 5pxpx 5pxpx 2pxpx 3pxpx #BFBFBF;
-    background-color: red;
 }
 
-.answer {
+hr {
+    border-top: 1px solid #dbdef0;
+    margin: 11px 0 26px 0;
+}
+
+.answers-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.option {
     min-width: 80px;
     margin-right: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     height: 30px;
     padding-right: 15px;
     padding-left: 15px;
-    border-radius: 10px;
-    border: black solid 2px;
+    border-radius: 11px;
     font-family: 'Karla';
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
+    color: var(--dark-purple);
+    padding-bottom: 2px;
+}
+
+.check-ans {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.score-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-class {
+    font-family: 'Karla';
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--dark-purple);
+}
+
+.game-btns {
+    font-family: 'Karla';
+    font-size: 16px;
+    font-weight: 500;
+    background-color: var(--purple);
+    padding: 0 28px;
+    border: none;
+    color: var(--background);
+}
+.check {
+    height: 50px;
+    border-radius: 14px;
+}
+.again {
+    height: 38px;
+    border-radius: 10px;
+    margin-left: 30px;
+}
+
+.blue-blob {
+    position: absolute;
+    left: 100px;
+    bottom: 80px;
+    z-index: -1;
+    width: 500px;
+}
+
+.yellow-blob {
+    position: absolute;
+    left: 1500px;
+    bottom: 500px;
+    z-index: -1;
+    width: 500px;
+}
+
+.error-message {
+    
 }

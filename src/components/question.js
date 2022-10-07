@@ -6,36 +6,59 @@ import Questions from './questions'
 import Answer from './answer'
 
 
-
 export default function Question(props) {
     const [answersState, setAnswersState] = React.useState(props.options)
+    const [selected, setSelected] = React.useState(props.selected)
+    const [gameOver, setGameOver] = React.useState(props.endGame)
+    const [correctAnswer, setCorrectAnswer] = React.useState(props.correct)
 
-    const answersss = props.options.map(answer => <button onClick={() => props.toggleSelected(answer)} className="answer">{answer}</button>)
+    // console.log(answersState)
+    // console.log(props.question)
+
+    React.useEffect(() => {
+        setCorrectAnswer(props.correct)
+    }, [props.correct])
+
+    React.useEffect(() => {
+        setAnswersState(props.options)
+    }, [props.options])
+
+    React.useEffect(() => {
+        setGameOver(props.endGame)
+    }, [props.endGame])
+
+    React.useEffect(() => {
+        setSelected(props.selected)
+    }, [props.selected])
+
+    function styler(answer) {
+        if (gameOver === true)
+        {
+            if (answer === correctAnswer) {
+                return ({backgroundColor: "#74D7A2", border: '#74D7A2 solid 1px'})
+            } else if (answer === selected) {
+                return({backgroundColor: "#F8BCBC", opacity:0.5, border: '#F8BCBC solid 1px'})
+            } else {
+                return({backgroundColor: "#ffffff", opacity:0.5, border: '#4d5b9e solid 1px'})
+            }
+        } else {
+            if (selected === answer) {
+                return({backgroundColor: "#D6D8F5", border: '#D6D8F5 solid 1px'})
+            } else {
+                return({backgroundColor: "#ffffff", border: '#4d5b9e solid 1px'})
+            }
+        }
+    }
+
+    const answers = answersState.map(answer => <button onClick={() => props.toggleSelected(props.question, answer)} style={styler(answer)} className="option">{answer}</button>)
     
-    // const answers = answersState.map(answer=> {
-    //     return {answer: answer, id: nanoid(), selected: false}
-    // })
-
-
-
-    // heres where i left off last night. when you now click a button, it will console.log the shiiiiiit in app.js but the rest of the code in that section throws a fit
-    // trying to get it so that when you click an option it will go trigger that function in app.js and will change the selected parameter of the question to be the one just clicked
-
-
-
-    const answersRender = answersState.map(answer => (
-        <Answer answer={answer.answer} id={answer.id} toggleSelected={props.toggleSelected} />
-    ))
-
     return (
         <div className="whole-box">
-            <div className="question">
-                {props.question}
-            </div>
-            {/* <div className="answer-box">
+            <span className="question">{props.question}</span>
+            <div className="answers-box">
                 {answers}
-            </div> */}
-            {answersss}
+            </div>
+            <hr></hr>
         </div>
     )
 }

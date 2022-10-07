@@ -1,20 +1,13 @@
 import React from "react"
 import '../styles.css'
-import {nanoid} from "nanoid"
 
 
-export default function Answer(props) {
-
-    const styles = {
-        backgroundColor: props.selected ? "red" : "blue"
-    }
-
-    // console.log("fuck")
-    // console.log(props.answer)
-
+export default function CheckAnswers(props) {
+    
     return (
-        <div>
-            <button style={styles} onClick={() => props.toggleSelected(props.answer)} className="answer-button">{props.answer}</button>
+        <div className="check-ans">
+            <button onClick={props.end} className="game-btns check">Check Answers</button>
+            {props.err && <p className="error-message">psst... select an answer for each question</p>}
         </div>
     )
 }
