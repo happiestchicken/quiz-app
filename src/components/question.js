@@ -1,9 +1,6 @@
-
 import React from "react"
 import '../styles.css'
 import {nanoid} from "nanoid"
-import Questions from './questions'
-import Answer from './answer'
 
 
 export default function Question(props) {
@@ -11,9 +8,6 @@ export default function Question(props) {
     const [selected, setSelected] = React.useState(props.selected)
     const [gameOver, setGameOver] = React.useState(props.endGame)
     const [correctAnswer, setCorrectAnswer] = React.useState(props.correct)
-
-    // console.log(answersState)
-    // console.log(props.question)
 
     React.useEffect(() => {
         setCorrectAnswer(props.correct)
@@ -31,6 +25,8 @@ export default function Question(props) {
         setSelected(props.selected)
     }, [props.selected])
 
+    /* conditional rendering. styles the buttons according to whether they are selected or not
+    and at the end of the game, whether they are the correct selections */
     function styler(answer) {
         if (gameOver === true)
         {
@@ -50,11 +46,12 @@ export default function Question(props) {
         }
     }
 
-    const answers = answersState.map(answer => <button onClick={() => props.toggleSelected(props.question, answer)} style={styler(answer)} className="option">{answer}</button>)
+    // maps each multiple choice answer with its appropriate styling
+    const answers = answersState.map(answer => <button onClick={() => props.toggleSelected(props.question, answer)} key={nanoid()} style={styler(answer)} className="option-btns">{answer}</button>)
     
     return (
-        <div className="whole-box">
-            <span className="question">{props.question}</span>
+        <div className="whole-answers-div">
+            <span className="question-title">{props.question}</span>
             <div className="answers-box">
                 {answers}
             </div>

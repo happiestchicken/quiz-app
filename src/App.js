@@ -1,62 +1,66 @@
-import './styles.css'
 import React from 'react';
+import './styles.css'
 import Start from './components/startPage'
 import Question from './components/question'
-import CheckAnswers from './components/answer'
-import ScoreRestart from './components/scorerestart'
+import {nanoid} from "nanoid"
 
 
-function App() {  
+export default function App() {
   const [startMenu, setStartMenu] = React.useState(true)
   const [questions, setQuestions] = React.useState([])
-  const [apiDone, setApiDone] = React.useState(false)
+  const [dispQuestions, setDispQuestions] = React.useState(false)
   const [endGame, setEndGame] = React.useState(false)
   const [totalCorrect, setTotalCorrect] = React.useState(0)
-  const [firstGame, setFirstGame] = React.useState(true)
   const [dispErrMsg, setDispErrMsg] = React.useState(false)
+  const [gameCounter, setGameCounter] = React.useState(0) 
 
-function toggleSelected(propsQuestion, selected) {
-  if (!endGame) {
-    setQuestions(prevQuestions => {
-        return prevQuestions.map(theQuestion => {
-            return propsQuestion === theQuestion.question ? {...theQuestion, selected_answer: selected} : theQuestion
-        })
-    })
-  }
-}
-
-const chars = {'Å\x84':'n', 'Ã©':'e', 'âA':'"', 'Ã¡':'a', 'â\x80\x99':"'", 'â':'-', '(ç§¦)':"", '(é½)':"", '(è¶)':'', 'Ã':'i', 'â¦â':'...'};
-
+  // retrieving questions from trivia API
   React.useEffect(() => {
     if(startMenu === false) {
-    fetch("https://opentdb.com/api.php?amount=5&encode=base64")
-        .then(res => res.json())
-        .then(data => setQuestions(data.results.map(function(question) {
-            return({
-                    question:atob(question.question).replace(/Å\x84|Ã©|âA|Ã¡|â\x80\x99|â|(ç§¦)|(é½)|(è¶)|Ã|â¦â/g, x => chars[x]),
-                    // question:question.question.replace(/&quot;|&#039;/g, m => chars[m]),
-                    options:question.incorrect_answers.concat([question.correct_answer]).map(value => 
-                      ({ value, sort: Math.random() })).sort((a, b) => a.sort - b.sort).map(({ value }) => value).map(option => atob(option).replace(/Å\x84|Ã©|âA|Ã¡|â\x80\x99|â|(ç§¦)|(é½)|(è¶)|Ã|â¦â/g, x => chars[x])),
-                    selected_answer:undefined,
-                    correct_answer:atob(question.correct_answer)})
-        })))
+    fetch("https://opentdb.com/api.php?amount=5")
+      .then(res => res.json())
+      .then(data => setQuestions(data.results.map(function(question) {
+          return({
+                  question:decodeEntity(question.question),
+                  options:question.incorrect_answers.concat([question.correct_answer]).map(value => 
+                    ({ value, sort: Math.random() })).sort((a, b) => a.sort - b.sort).map(({ value }) => value).map(option => decodeEntity(option)),
+                  selected_answer:undefined,
+                  correct_answer:decodeEntity(question.correct_answer),
+                  id: nanoid()})
+      })))
     }
-}, [startMenu])
+    window.scrollTo(0, 0)
+  }, [startMenu, gameCounter])
 
-  function startGame() {
-    console.log('hi')
-    setStartMenu(false)
-    setApiDone(true)
+  // function used to decode the HTML encoding which the api gives
+  function decodeEntity(inputStr) {
+    var textarea = document.createElement("textarea");
+    textarea.innerHTML = inputStr;
+    return textarea.value;
   }
 
+  // updates the questions array to contain the selected answer
+  function toggleSelected(propsQuestion, selected) {
+    if (!endGame) {
+      setQuestions(prevQuestions => {
+          return prevQuestions.map(theQuestion => {
+              return propsQuestion === theQuestion.question ? {...theQuestion, selected_answer: selected} : theQuestion
+          })
+      })
+    }
+  }
+
+  /* checks to ensure that all questions have been answered. 
+  If so, calls function which checks how many answers were correct. 
+  If not, displays error message. */
   function endGameFunc() {
-    let totSelected = 0
+    let totalSelected = 0
     for (let i = 0; i < 5; i++) {
       if (typeof questions[i].selected_answer != 'undefined') {
-        totSelected++;
+        totalSelected++;
       }
     }
-    if (totSelected === 5) {
+    if (totalSelected === 5) {
       setDispErrMsg(false)
       setEndGame(true)
       checkAnswersFunc()
@@ -65,19 +69,22 @@ const chars = {'Å\x84':'n', 'Ã©':'e', 'âA':'"', 'Ã¡':'a', 'â\x80\x99'
     }
   }
 
-  function newGame() {
-    setEndGame(false) // make button go back to check answers
-    setStartMenu(true)
-    setFirstGame(false)
-    // setStartMenu(false)
-    // setApiDone(true)
-    // setNewGameCheck(false) // should make sure that the start screen doesn't re-appear
-    setTotalCorrect(0) // set the numerator back to 0
-    // startGame() // does what the start button would do normally
-    console.log("the questions")
-    console.log(questions)
+  // when start button clicked, renders the questions to page
+  function startGame() {
+    setStartMenu(false)
+    setDispQuestions(true)
   }
 
+  // when user wants to play a new game, this function will render new questions
+  function newGame() {
+    setEndGame(false)
+    setStartMenu(true)
+    setTotalCorrect(0)
+    startGame()
+    setGameCounter(count => count + 1)
+  }
+
+  // checks how many answers were correct
   function checkAnswersFunc() {
       for (let i = 0; i < 5; i++) {
         if (questions[i].selected_answer === questions[i].correct_answer) {
@@ -86,29 +93,37 @@ const chars = {'Å\x84':'n', 'Ã©':'e', 'âA':'"', 'Ã¡':'a', 'â\x80\x99'
       }
   }
 
+  // maps the questions to be displayed
   const questionsPage = questions.map(question => (
-    <Question question={question.question} options={question.options} selected={question.selected_answer} correct={question.correct_answer} toggleSelected={toggleSelected} endGame={endGame} />
+    <Question key={question.id} question={question.question} options={question.options} selected={question.selected_answer}
+    correct={question.correct_answer} toggleSelected={toggleSelected} endGame={endGame} />
   ))
 
-  let num = totalCorrect
-  let den = questions.length
-
+  /* used so that the start page only renders before the start button is clicked, 
+  but also only when its the first game being played */
   let checkAnsBtn = !startMenu && !endGame
-
-  let startMenuRender = startMenu && firstGame
 
   return (
     <main>
       <img src={process.env.PUBLIC_URL + `/images/blue-blob.png`} alt='blue-blob' className='blue-blob' />
       <img src={process.env.PUBLIC_URL + `/images/yellow-blob.png`} alt='yellow-blob' className='yellow-blob' />
       {startMenu && <Start start={startGame} />}
+      {dispQuestions && 
       <div className='question-box'>
-        {apiDone && questionsPage}
-        {checkAnsBtn && <CheckAnswers end={endGameFunc} err={dispErrMsg} />}
-        {endGame && <ScoreRestart num={totalCorrect} den={den} new={newGame} />}
-      </div>
+        {questionsPage}
+        {checkAnsBtn && 
+          <div className="check-answers-div">
+            <button onClick={endGameFunc} className="game-btns check-ans-btn">Check Answers</button>
+            <div className='err-msg-div'>
+              {dispErrMsg && <p className="error-message">psst... select an answer for each question</p>}
+            </div>
+          </div>}
+        {endGame && 
+          <div className="score-div">
+            <h5 className="score-class">You scored {totalCorrect}/5 correct answers</h5>
+            <button onClick={newGame} className="game-btns play-again-btn">Play again</button>
+          </div>}
+      </div>}
     </main>
   );
 }
-
-export default App;
